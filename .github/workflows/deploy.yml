@@ -1,0 +1,40 @@
+name: Workshops CI-CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-dev:
+    name: Validate Build and Deploy DEV
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup AWS SAM CLI
+        uses: aws-actions/setup-sam@v2
+
+      - name: Configure AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v6.2.3
+        with:
+          role-to-assume: arn:aws:iam::318827120485:role/GitHubActionsWorkshopsSAMRole
+          aws-region: us-east-1
+          role-session-name: WorkshopsGitHubActions
+          allowed-account-ids: 318827120485
+
+      - name: Validate SAM template
+        run: sam validate --lint
+
+      - name: Build SAM application
+        run: sam build
+
+      - name: Deploy DEV
+        run: sam deploy --config-env dev --no-confirm-changeset --no-fail-on-empty-changeset
