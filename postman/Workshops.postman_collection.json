@@ -1,0 +1,237 @@
+{
+  "info": {
+    "_postman_id": "8b4c3bda-8f15-4b1f-a2d3-workshops2026",
+    "name": "Workshops Serverless AWS",
+    "description": "Colección Postman para probar la API REST del proyecto Workshops Serverless AWS.\n\nBase URL por CloudFront: https://d1z6gu4fgp8a7e.cloudfront.net/api\n\nLas operaciones protegidas usan variables de colección para los tokens Cognito:\n- {{adminToken}}\n- {{studentToken}}\n",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET - Listar talleres",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/workshops",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "workshops"
+          ]
+        },
+        "description": "Obtiene la lista de talleres. Endpoint público."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET - Obtener taller por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/workshops/{{workshopId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "workshops",
+            "{{workshopId}}"
+          ]
+        },
+        "description": "Obtiene un taller por su identificador."
+      }
+    },
+    {
+      "name": "POST - Crear taller (Admin)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{adminToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Taller Serverless AWS\",\n  \"description\": \"Taller de prueba creado desde Postman\",\n  \"category\": \"Tecnología\",\n  \"location\": \"Virtual\",\n  \"startAt\": \"2026-10-10T10:00:00\",\n  \"endAt\": \"2026-10-10T12:00:00\",\n  \"status\": \"scheduled\",\n  \"capacity\": 30\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/workshops",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "workshops"
+          ]
+        },
+        "description": "Crea un nuevo taller. Requiere token Cognito de un usuario Admin."
+      }
+    },
+    {
+      "name": "PUT - Actualizar taller (Admin)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{adminToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Taller Serverless AWS - Actualizado\",\n  \"description\": \"Taller actualizado desde Postman\",\n  \"category\": \"Tecnología\",\n  \"location\": \"Virtual\",\n  \"startAt\": \"2026-10-10T10:00:00\",\n  \"endAt\": \"2026-10-10T13:00:00\",\n  \"status\": \"scheduled\",\n  \"capacity\": 40\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/workshops/{{workshopId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "workshops",
+            "{{workshopId}}"
+          ]
+        },
+        "description": "Actualiza un taller existente. Requiere token Cognito de Admin."
+      }
+    },
+    {
+      "name": "DELETE - Eliminar taller (Admin)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{adminToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/workshops/{{workshopId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "workshops",
+            "{{workshopId}}"
+          ]
+        },
+        "description": "Elimina un taller. Requiere token Cognito de Admin."
+      }
+    },
+    {
+      "name": "POST - Registrar estudiante",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{studentToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/workshops/{{workshopId}}/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "workshops",
+            "{{workshopId}}",
+            "register"
+          ]
+        },
+        "description": "Registra al estudiante autenticado en un taller. Requiere token Cognito de Student."
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://d1z6gu4fgp8a7e.cloudfront.net/api",
+      "type": "string"
+    },
+    {
+      "key": "workshopId",
+      "value": "123",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "studentToken",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
