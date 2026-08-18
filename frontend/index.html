@@ -1,0 +1,2705 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Workshops | Formación Profesional</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #223f3e;
+        }
+
+        header {
+            background: #223f3e;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 8px;
+        }
+
+        nav {
+            background: #131a22;
+            padding: 12px;
+            text-align: center;
+        }
+
+        nav a,
+        nav button {
+            color: white;
+            text-decoration: none;
+            margin: 0 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        nav a:hover,
+        nav button:hover {
+            color: #ff9900;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 55px 20px;
+            background: white;
+        }
+
+        .hero h2 {
+            font-size: 34px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 17px;
+        }
+
+        .user-bar {
+            display: none;
+            background: #e8f5e9;
+            padding: 12px 20px;
+            text-align: center;
+            border-bottom: 1px solid #d2e8d4;
+        }
+
+        .user-bar strong {
+            color: #0b7a24;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 35px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 26px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-size: 18px;
+        }
+
+        .error-message {
+            background: #ffe5e5;
+            color: #a40000;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .success-message {
+            background: #e7f8e7;
+            color: green;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h3 {
+            color: #0066aa;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            margin: 7px 0;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        .btn {
+            display: inline-block;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            margin-right: 6px;
+        }
+
+        .btn-primary {
+            background: #ff9900;
+            color: black;
+        }
+
+        .btn-primary:hover {
+            background: #e88a00;
+        }
+
+        .btn-blue {
+            background: #0073bb;
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background: #005f99;
+        }
+
+        .btn-danger {
+            background: #c62828;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #a51f1f;
+        }
+
+        .btn-gray {
+            background: #ddd;
+            color: #222;
+        }
+
+        .admin-panel {
+            display: none;
+            background: white;
+            margin-bottom: 35px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.10);
+        }
+
+        .admin-panel h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 90px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.55);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 470px;
+            padding: 28px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.30);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 8px;
+        }
+
+        .modal-content p {
+            margin-bottom: 18px;
+        }
+
+        .modal-actions {
+            margin-top: 15px;
+        }
+
+        .status-ok {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-cancelled {
+            color: #b00020;
+            font-weight: bold;
+        }
+
+        #registrationsSection {
+            display: none;
+            background: white;
+            margin-top: 35px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.10);
+        }
+
+        .registration-item {
+            border-bottom: 1px solid #ddd;
+            padding: 12px 0;
+        }
+
+        footer {
+            background: #223f3e;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 650px) {
+            nav a,
+            nav button {
+                display: inline-block;
+                margin: 6px 8px;
+            }
+
+            .hero h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Workshops</h1>
+    <p>Plataforma de Formación Profesional</p>
+</header>
+
+<nav>
+    <a href="#inicio">Inicio</a>
+
+    <a href="#talleres">Talleres</a>
+
+    <a
+        href="#"
+        id="myRegistrationsLink"
+        style="display:none;"
+    >
+        Mis Registros
+    </a>
+
+    <button
+        id="loginButton"
+        onclick="startLogin()"
+    >
+        Iniciar Sesión
+    </button>
+
+    <button
+        id="logoutButton"
+        onclick="logout()"
+        style="display:none;"
+    >
+        Cerrar Sesión
+    </button>
+</nav>
+
+<div id="userBar" class="user-bar">
+    Usuario:
+    <strong id="userEmail"></strong>
+
+    &nbsp; | &nbsp;
+
+    Rol:
+    <strong id="userRole"></strong>
+</div>
+
+<section class="hero" id="inicio">
+    <h2>Impulsa tus conocimientos</h2>
+
+    <p>
+        Consulta nuestros talleres profesionales
+        y regístrate de forma rápida y segura.
+    </p>
+</section>
+
+<main class="container" id="talleres">
+
+    <div
+        id="errorMessage"
+        class="error-message"
+    ></div>
+
+    <div
+        id="successMessage"
+        class="success-message"
+    ></div>
+
+    <!-- PANEL DE ADMINISTRADOR -->
+
+    <section
+        id="adminPanel"
+        class="admin-panel"
+    >
+        <h2>Administración de talleres</h2>
+
+        <form
+            id="workshopForm"
+            onsubmit="saveWorkshop(event)"
+        >
+            <input
+                type="hidden"
+                id="editingWorkshopId"
+            >
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="workshopId">
+                        ID del taller
+                    </label>
+
+                    <input
+                        id="workshopId"
+                        placeholder="Ejemplo: 789"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="workshopName">
+                        Nombre
+                    </label>
+
+                    <input
+                        id="workshopName"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="workshopCategory">
+                        Categoría
+                    </label>
+
+                    <input
+                        id="workshopCategory"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="workshopLocation">
+                        Modalidad / ubicación
+                    </label>
+
+                    <input
+                        id="workshopLocation"
+                        value="Virtual"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="workshopStart">
+                        Inicio
+                    </label>
+
+                    <input
+                        id="workshopStart"
+                        type="datetime-local"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="workshopEnd">
+                        Finalización
+                    </label>
+
+                    <input
+                        id="workshopEnd"
+                        type="datetime-local"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="workshopCapacity">
+                        Capacidad
+                    </label>
+
+                    <input
+                        id="workshopCapacity"
+                        type="number"
+                        min="1"
+                        value="30"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="workshopStatus">
+                        Estado
+                    </label>
+
+                    <select id="workshopStatus">
+                        <option value="scheduled">
+                            scheduled
+                        </option>
+
+                        <option value="cancelled">
+                            cancelled
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label for="workshopDescription">
+                    Descripción
+                </label>
+
+                <textarea
+                    id="workshopDescription"
+                ></textarea>
+            </div>
+
+            <button
+                class="btn btn-primary"
+                type="submit"
+            >
+                Guardar taller
+            </button>
+
+            <button
+                class="btn btn-gray"
+                type="button"
+                onclick="clearWorkshopForm()"
+            >
+                Limpiar
+            </button>
+
+        </form>
+    </section>
+
+    <h2 class="section-title">
+        Talleres disponibles
+    </h2>
+
+    <div
+        id="loading"
+        class="loading"
+    >
+        Cargando talleres...
+    </div>
+
+    <div
+        id="workshopsContainer"
+        class="cards"
+    ></div>
+
+    <section id="registrationsSection">
+        <h2>Mis Registros</h2>
+
+        <div id="registrationsContainer"></div>
+    </section>
+
+</main>
+
+
+<!-- MODAL DE REGISTRO -->
+
+<div
+    id="registrationModal"
+    class="modal"
+>
+    <div class="modal-content">
+
+        <h2>Registro al Workshop</h2>
+
+        <p id="registrationWorkshopName"></p>
+
+        <div class="form-group">
+            <label for="participantName">
+                Nombre completo
+            </label>
+
+            <input
+                id="participantName"
+                placeholder="Ingrese su nombre"
+            >
+        </div>
+
+        <div class="form-group">
+            <label>
+                Correo electrónico
+            </label>
+
+            <input
+                id="participantEmail"
+                disabled
+            >
+        </div>
+
+        <div class="modal-actions">
+
+            <button
+                class="btn btn-primary"
+                onclick="confirmRegistration()"
+            >
+                Confirmar registro
+            </button>
+
+            <button
+                class="btn btn-gray"
+                onclick="closeRegistrationModal()"
+            >
+                Cancelar
+            </button>
+
+        </div>
+
+        <div
+            id="registrationResult"
+            style="
+                margin-top:15px;
+                font-weight:bold;
+            "
+        ></div>
+
+    </div>
+</div>
+
+
+<footer>
+    Proyecto Workshops Serverless | AWS 2026
+</footer>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURACION AWS
+   ========================================================= */
+
+const API_BASE =
+    "https://r4w74x1kvd.execute-api.us-east-1.amazonaws.com/dev";
+
+const COGNITO_DOMAIN =
+    "https://us-east-1gw9yamjvr.auth.us-east-1.amazoncognito.com";
+
+/*
+   CLIENT ID CORRECTO
+*/
+const CLIENT_ID =
+    "1apv62n15ucb1lvptafsjjifmk";
+
+const REDIRECT_URI =
+    "https://d1z6gu4fgp8a7e.cloudfront.net/";
+
+const LOGOUT_URI =
+    "https://d1z6gu4fgp8a7e.cloudfront.net/";
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+let workshops = [];
+let selectedWorkshop = null;
+
+
+/* =========================================================
+   PKCE
+   ========================================================= */
+
+function base64UrlEncode(bytes) {
+
+    let binary = "";
+
+    bytes.forEach(
+        byte => {
+            binary += String.fromCharCode(byte);
+        }
+    );
+
+    return btoa(binary)
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+}
+
+
+function randomString(length = 64) {
+
+    const bytes =
+        new Uint8Array(length);
+
+    crypto.getRandomValues(bytes);
+
+    return base64UrlEncode(bytes);
+}
+
+
+async function createCodeChallenge(verifier) {
+
+    const encoder =
+        new TextEncoder();
+
+    const data =
+        encoder.encode(verifier);
+
+    const digest =
+        await crypto.subtle.digest(
+            "SHA-256",
+            data
+        );
+
+    return base64UrlEncode(
+        new Uint8Array(digest)
+    );
+}
+
+
+/* =========================================================
+   INICIAR SESION CON COGNITO
+   ========================================================= */
+
+async function startLogin() {
+
+    try {
+
+        const verifier =
+            randomString(64);
+
+        const challenge =
+            await createCodeChallenge(
+                verifier
+            );
+
+        const state =
+            randomString(32);
+
+
+        sessionStorage.setItem(
+            "pkce_verifier",
+            verifier
+        );
+
+        sessionStorage.setItem(
+            "oauth_state",
+            state
+        );
+
+
+        const params =
+            new URLSearchParams({
+
+                response_type:
+                    "code",
+
+                client_id:
+                    CLIENT_ID,
+
+                redirect_uri:
+                    REDIRECT_URI,
+
+                scope:
+                    "openid email",
+
+                state:
+                    state,
+
+                code_challenge:
+                    challenge,
+
+                code_challenge_method:
+                    "S256"
+
+            });
+
+
+        window.location.href =
+            COGNITO_DOMAIN
+            + "/oauth2/authorize?"
+            + params.toString();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Error iniciando sesión:",
+            error
+        );
+
+        showError(
+            "No fue posible iniciar el proceso de autenticación."
+        );
+    }
+}
+
+
+/* =========================================================
+   PROCESAR REGRESO DE COGNITO
+   ========================================================= */
+
+async function processCallback() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const code =
+        params.get("code");
+
+    const returnedState =
+        params.get("state");
+
+    const oauthError =
+        params.get("error");
+
+
+    if (oauthError) {
+
+        const description =
+            params.get(
+                "error_description"
+            );
+
+        cleanBrowserUrl();
+
+        showError(
+            description
+            || oauthError
+        );
+
+        return;
+    }
+
+
+    if (!code) {
+        return;
+    }
+
+
+    const verifier =
+        sessionStorage.getItem(
+            "pkce_verifier"
+        );
+
+
+    const expectedState =
+        sessionStorage.getItem(
+            "oauth_state"
+        );
+
+
+    if (!verifier) {
+
+        cleanBrowserUrl();
+
+        showError(
+            "No se encontró la información PKCE. "
+            + "Pulsa Iniciar Sesión nuevamente."
+        );
+
+        return;
+    }
+
+
+    if (
+        !expectedState
+        ||
+        returnedState !== expectedState
+    ) {
+
+        sessionStorage.removeItem(
+            "pkce_verifier"
+        );
+
+        sessionStorage.removeItem(
+            "oauth_state"
+        );
+
+        cleanBrowserUrl();
+
+        showError(
+            "No fue posible validar el estado de la sesión."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const body =
+            new URLSearchParams({
+
+                grant_type:
+                    "authorization_code",
+
+                client_id:
+                    CLIENT_ID,
+
+                code:
+                    code,
+
+                redirect_uri:
+                    REDIRECT_URI,
+
+                code_verifier:
+                    verifier
+
+            });
+
+
+        const tokenResponse =
+            await fetch(
+
+                COGNITO_DOMAIN
+                + "/oauth2/token",
+
+                {
+                    method:
+                        "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body:
+                        body.toString()
+                }
+            );
+
+
+        const tokenData =
+            await tokenResponse.json();
+
+
+        if (!tokenResponse.ok) {
+
+            throw new Error(
+                tokenData.error_description
+                ||
+                tokenData.error
+                ||
+                "No fue posible obtener los tokens."
+            );
+        }
+
+
+        if (!tokenData.id_token) {
+
+            throw new Error(
+                "Cognito no devolvió un ID token."
+            );
+        }
+
+
+        sessionStorage.setItem(
+            "id_token",
+            tokenData.id_token
+        );
+
+
+        if (tokenData.access_token) {
+
+            sessionStorage.setItem(
+                "access_token",
+                tokenData.access_token
+            );
+        }
+
+
+        if (tokenData.refresh_token) {
+
+            sessionStorage.setItem(
+                "refresh_token",
+                tokenData.refresh_token
+            );
+        }
+
+
+        sessionStorage.removeItem(
+            "pkce_verifier"
+        );
+
+        sessionStorage.removeItem(
+            "oauth_state"
+        );
+
+
+        cleanBrowserUrl();
+
+
+        showSuccess(
+            "Inicio de sesión realizado correctamente."
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Error de autenticación:",
+            error
+        );
+
+
+        sessionStorage.removeItem(
+            "pkce_verifier"
+        );
+
+        sessionStorage.removeItem(
+            "oauth_state"
+        );
+
+
+        cleanBrowserUrl();
+
+
+        showError(
+            "Error al completar el inicio de sesión: "
+            + error.message
+        );
+    }
+}
+
+
+/* =========================================================
+   LIMPIAR URL
+   ========================================================= */
+
+function cleanBrowserUrl() {
+
+    history.replaceState(
+        {},
+        document.title,
+        "/"
+    );
+}
+
+
+/* =========================================================
+   DECODIFICAR JWT
+   ========================================================= */
+
+function decodeJwt(token) {
+
+    if (!token) {
+        return null;
+    }
+
+
+    try {
+
+        const parts =
+            token.split(".");
+
+
+        if (parts.length !== 3) {
+            return null;
+        }
+
+
+        let payload =
+            parts[1]
+                .replace(/-/g, "+")
+                .replace(/_/g, "/");
+
+
+        while (
+            payload.length % 4
+        ) {
+            payload += "=";
+        }
+
+
+        const decoded =
+            atob(payload);
+
+
+        const jsonString =
+            decodeURIComponent(
+
+                Array.prototype.map
+                    .call(
+                        decoded,
+                        character => {
+
+                            return "%"
+                                + (
+                                    "00"
+                                    + character
+                                        .charCodeAt(0)
+                                        .toString(16)
+                                )
+                                .slice(-2);
+                        }
+                    )
+                    .join("")
+            );
+
+
+        return JSON.parse(
+            jsonString
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "No se pudo leer el JWT:",
+            error
+        );
+
+        return null;
+    }
+}
+
+
+/* =========================================================
+   USUARIO ACTUAL
+   ========================================================= */
+
+function getCurrentUser() {
+
+    const idToken =
+        sessionStorage.getItem(
+            "id_token"
+        );
+
+
+    const claims =
+        decodeJwt(
+            idToken
+        );
+
+
+    if (!claims) {
+        return null;
+    }
+
+
+    if (
+        claims.exp
+        &&
+        Date.now()
+        >=
+        claims.exp * 1000
+    ) {
+
+        clearLocalSession();
+
+        return null;
+    }
+
+
+    let groups =
+        claims["cognito:groups"]
+        || [];
+
+
+    if (!Array.isArray(groups)) {
+
+        groups = [
+            groups
+        ];
+    }
+
+
+    return {
+
+        email:
+            claims.email
+            || "",
+
+        groups:
+            groups,
+
+        claims:
+            claims
+
+    };
+}
+
+
+/* =========================================================
+   ROLES
+   ========================================================= */
+
+function isAdmin() {
+
+    const user =
+        getCurrentUser();
+
+
+    return (
+        user
+        &&
+        user.groups.includes(
+            "Admin"
+        )
+    );
+}
+
+
+function isStudent() {
+
+    const user =
+        getCurrentUser();
+
+
+    return (
+        user
+        &&
+        user.groups.includes(
+            "Student"
+        )
+    );
+}
+
+
+/* =========================================================
+   ACTUALIZAR INTERFAZ
+   ========================================================= */
+
+function updateAuthUI() {
+
+    const user =
+        getCurrentUser();
+
+
+    const loginButton =
+        document.getElementById(
+            "loginButton"
+        );
+
+
+    const logoutButton =
+        document.getElementById(
+            "logoutButton"
+        );
+
+
+    const userBar =
+        document.getElementById(
+            "userBar"
+        );
+
+
+    const adminPanel =
+        document.getElementById(
+            "adminPanel"
+        );
+
+
+    const registrationsLink =
+        document.getElementById(
+            "myRegistrationsLink"
+        );
+
+
+    if (!user) {
+
+        loginButton.style.display =
+            "inline-block";
+
+        logoutButton.style.display =
+            "none";
+
+        userBar.style.display =
+            "none";
+
+        adminPanel.style.display =
+            "none";
+
+        registrationsLink.style.display =
+            "none";
+
+        return;
+    }
+
+
+    loginButton.style.display =
+        "none";
+
+    logoutButton.style.display =
+        "inline-block";
+
+    userBar.style.display =
+        "block";
+
+
+    document.getElementById(
+        "userEmail"
+    ).textContent =
+        user.email;
+
+
+    let role =
+        "Usuario";
+
+
+    if (isAdmin()) {
+
+        role =
+            "Admin";
+    }
+
+    else if (isStudent()) {
+
+        role =
+            "Student";
+    }
+
+
+    document.getElementById(
+        "userRole"
+    ).textContent =
+        role;
+
+
+    if (isAdmin()) {
+
+        adminPanel.style.display =
+            "block";
+    }
+
+    else {
+
+        adminPanel.style.display =
+            "none";
+    }
+
+
+    if (isStudent()) {
+
+        registrationsLink.style.display =
+            "inline-block";
+    }
+
+    else {
+
+        registrationsLink.style.display =
+            "none";
+    }
+}
+
+
+/* =========================================================
+   CERRAR SESION
+   ========================================================= */
+
+function clearLocalSession() {
+
+    sessionStorage.removeItem(
+        "id_token"
+    );
+
+    sessionStorage.removeItem(
+        "access_token"
+    );
+
+    sessionStorage.removeItem(
+        "refresh_token"
+    );
+
+    sessionStorage.removeItem(
+        "pkce_verifier"
+    );
+
+    sessionStorage.removeItem(
+        "oauth_state"
+    );
+}
+
+
+function logout() {
+
+    clearLocalSession();
+
+
+    const params =
+        new URLSearchParams({
+
+            client_id:
+                CLIENT_ID,
+
+            logout_uri:
+                LOGOUT_URI
+
+        });
+
+
+    window.location.href =
+        COGNITO_DOMAIN
+        + "/logout?"
+        + params.toString();
+}
+
+
+/* =========================================================
+   PETICIONES API
+   ========================================================= */
+
+async function apiFetch(
+    path,
+    options = {},
+    protectedRequest = false
+) {
+
+    const requestOptions = {
+        ...options
+    };
+
+
+    requestOptions.headers = {
+        ...(options.headers || {})
+    };
+
+
+    if (protectedRequest) {
+
+        const idToken =
+            sessionStorage.getItem(
+                "id_token"
+            );
+
+
+        if (!idToken) {
+
+            throw new Error(
+                "Debe iniciar sesión para realizar esta operación."
+            );
+        }
+
+
+        requestOptions.headers[
+            "Authorization"
+        ] = idToken;
+    }
+
+
+    const response =
+        await fetch(
+            API_BASE + path,
+            requestOptions
+        );
+
+
+    let data = {};
+
+
+    try {
+
+        data =
+            await response.json();
+
+    }
+
+    catch (error) {
+
+        data = {};
+    }
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.message
+            ||
+            (
+                "Error HTTP "
+                + response.status
+            )
+        );
+    }
+
+
+    return data;
+}
+
+
+/* =========================================================
+   CARGAR TALLERES
+   ========================================================= */
+
+async function loadWorkshops() {
+
+    const loading =
+        document.getElementById(
+            "loading"
+        );
+
+
+    try {
+
+        loading.style.display =
+            "block";
+
+
+        const data =
+            await apiFetch(
+                "/workshops?limit=50"
+            );
+
+
+        workshops = (data.items || []).map(item => ({
+    ...item,
+
+    workshopId:
+        item.workshopId ||
+        (
+            item.PK &&
+            item.PK.startsWith("WORKSHOP#")
+                ? item.PK.replace("WORKSHOP#", "")
+                : ""
+        )
+}));
+
+
+        renderWorkshops();
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+
+        showError(
+            "No fue posible cargar los talleres: "
+            + error.message
+        );
+
+    }
+
+    finally {
+
+        loading.style.display =
+            "none";
+    }
+}
+
+
+/* =========================================================
+   MOSTRAR TALLERES
+   ========================================================= */
+
+function renderWorkshops() {
+
+    const container =
+        document.getElementById(
+            "workshopsContainer"
+        );
+
+
+    container.innerHTML =
+        "";
+
+
+    if (
+        !workshops
+        ||
+        workshops.length === 0
+    ) {
+
+        container.innerHTML =
+            "<p>No hay talleres disponibles.</p>";
+
+        return;
+    }
+
+
+    workshops.forEach(
+        workshop => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "card";
+
+
+            const statusClass =
+                workshop.status === "cancelled"
+                ?
+                "status-cancelled"
+                :
+                "status-ok";
+
+
+            let actions = "";
+
+
+            if (isAdmin()) {
+
+                actions = `
+
+                    <button
+                        class="btn btn-blue"
+                        onclick="editWorkshop(
+                            '${escapeJs(workshop.workshopId)}'
+                        )"
+                    >
+                        Editar
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        onclick="deleteWorkshop(
+                            '${escapeJs(workshop.workshopId)}'
+                        )"
+                    >
+                        Eliminar
+                    </button>
+
+                `;
+
+            }
+
+            else if (isStudent()) {
+
+                if (
+                    workshop.status !==
+                    "cancelled"
+                ) {
+
+                    actions = `
+
+                        <button
+                            class="btn btn-primary"
+                            onclick="openRegistration(
+                                '${escapeJs(workshop.workshopId)}'
+                            )"
+                        >
+                            Registrarme
+                        </button>
+
+                    `;
+                }
+
+            }
+
+            else {
+
+                actions = `
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="startLogin()"
+                    >
+                        Iniciar sesión para registrarse
+                    </button>
+
+                `;
+            }
+
+
+            card.innerHTML = `
+
+                <h3>
+                    ${escapeHtml(
+                        workshop.name || "Workshop"
+                    )}
+                </h3>
+
+                <p>
+                    <strong>Categoría:</strong>
+                    ${escapeHtml(
+                        workshop.category || "-"
+                    )}
+                </p>
+
+                <p>
+                    <strong>Modalidad:</strong>
+                    ${escapeHtml(
+                        workshop.location || "-"
+                    )}
+                </p>
+
+                <p>
+                    <strong>Estado:</strong>
+
+                    <span class="${statusClass}">
+                        ${escapeHtml(
+                            workshop.status || "-"
+                        )}
+                    </span>
+                </p>
+
+                <p>
+                    <strong>Capacidad:</strong>
+
+                    ${escapeHtml(
+                        String(
+                            workshop.capacity ?? "-"
+                        )
+                    )}
+                </p>
+
+                <p>
+                    <strong>Inicio:</strong>
+
+                    ${formatDate(
+                        workshop.startAt
+                    )}
+                </p>
+
+                <p>
+                    ${escapeHtml(
+                        workshop.description || ""
+                    )}
+                </p>
+
+                ${actions}
+
+            `;
+
+
+            container.appendChild(
+                card
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   REGISTRO DE ESTUDIANTE
+   ========================================================= */
+
+function openRegistration(
+    workshopId
+) {
+
+    if (!isStudent()) {
+
+        showError(
+            "Esta operación requiere un usuario Student."
+        );
+
+        return;
+    }
+
+
+    selectedWorkshop =
+        workshops.find(
+            item =>
+                String(item.workshopId)
+                ===
+                String(workshopId)
+        );
+
+
+    if (!selectedWorkshop) {
+
+        showError(
+            "Taller no encontrado."
+        );
+
+        return;
+    }
+
+
+    const user =
+        getCurrentUser();
+
+
+    document.getElementById(
+        "registrationWorkshopName"
+    ).textContent =
+        selectedWorkshop.name;
+
+
+    document.getElementById(
+        "participantEmail"
+    ).value =
+        user.email;
+
+
+    document.getElementById(
+        "participantName"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "registrationResult"
+    ).textContent =
+        "";
+
+
+    document.getElementById(
+        "registrationModal"
+    ).style.display =
+        "flex";
+}
+
+
+function closeRegistrationModal() {
+
+    document.getElementById(
+        "registrationModal"
+    ).style.display =
+        "none";
+}
+
+
+async function confirmRegistration() {
+
+    if (!selectedWorkshop) {
+        return;
+    }
+
+
+    const name =
+        document.getElementById(
+            "participantName"
+        ).value.trim();
+
+
+    const result =
+        document.getElementById(
+            "registrationResult"
+        );
+
+
+    if (!name) {
+
+        result.style.color =
+            "red";
+
+        result.textContent =
+            "Ingrese su nombre completo.";
+
+        return;
+    }
+
+
+    try {
+
+        const data =
+            await apiFetch(
+
+                "/workshops/"
+                +
+                encodeURIComponent(
+                    selectedWorkshop.workshopId
+                )
+                +
+                "/register",
+
+                {
+                    method:
+                        "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            name:
+                                name
+                        })
+                },
+
+                true
+            );
+
+
+        result.style.color =
+            "green";
+
+
+        result.textContent =
+            "✓ "
+            + data.message;
+
+
+        saveLocalRegistration(
+            selectedWorkshop
+        );
+
+
+        renderRegistrations();
+
+    }
+
+    catch (error) {
+
+        result.style.color =
+            "red";
+
+        result.textContent =
+            error.message;
+    }
+}
+
+
+/* =========================================================
+   ADMIN - CREAR / ACTUALIZAR
+   ========================================================= */
+
+async function saveWorkshop(event) {
+
+    event.preventDefault();
+
+
+    if (!isAdmin()) {
+
+        showError(
+            "Solo los administradores pueden administrar talleres."
+        );
+
+        return;
+    }
+
+
+    const editingId =
+        document.getElementById(
+            "editingWorkshopId"
+        ).value;
+
+
+    const workshopId =
+        document.getElementById(
+            "workshopId"
+        ).value.trim();
+
+
+    const body = {
+
+        name:
+            document.getElementById(
+                "workshopName"
+            ).value.trim(),
+
+        description:
+            document.getElementById(
+                "workshopDescription"
+            ).value.trim(),
+
+        category:
+            document.getElementById(
+                "workshopCategory"
+            ).value.trim(),
+
+        location:
+            document.getElementById(
+                "workshopLocation"
+            ).value.trim(),
+
+        startAt:
+            localDateToIso(
+                document.getElementById(
+                    "workshopStart"
+                ).value
+            ),
+
+        endAt:
+            localDateToIso(
+                document.getElementById(
+                    "workshopEnd"
+                ).value
+            ),
+
+        status:
+            document.getElementById(
+                "workshopStatus"
+            ).value,
+
+        capacity:
+            Number(
+                document.getElementById(
+                    "workshopCapacity"
+                ).value
+            )
+
+    };
+
+
+    try {
+
+        let data;
+
+
+        if (editingId) {
+
+            data =
+                await apiFetch(
+
+                    "/workshops/"
+                    +
+                    encodeURIComponent(
+                        editingId
+                    ),
+
+                    {
+                        method:
+                            "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                body
+                            )
+                    },
+
+                    true
+                );
+
+        }
+
+        else {
+
+            if (workshopId) {
+
+                body.workshopId =
+                    workshopId;
+            }
+
+
+            data =
+                await apiFetch(
+
+                    "/workshops",
+
+                    {
+                        method:
+                            "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                body
+                            )
+                    },
+
+                    true
+                );
+        }
+
+
+        showSuccess(
+            data.message
+        );
+
+
+        clearWorkshopForm();
+
+
+        await loadWorkshops();
+
+    }
+
+    catch (error) {
+
+        showError(
+            error.message
+        );
+    }
+}
+
+
+/* =========================================================
+   EDITAR TALLER
+   ========================================================= */
+
+function editWorkshop(
+    workshopId
+) {
+
+    const workshop =
+        workshops.find(
+            item =>
+                String(item.workshopId)
+                ===
+                String(workshopId)
+        );
+
+
+    if (!workshop) {
+        return;
+    }
+
+
+    document.getElementById(
+        "editingWorkshopId"
+    ).value =
+        workshop.workshopId;
+
+
+    document.getElementById(
+        "workshopId"
+    ).value =
+        workshop.workshopId;
+
+
+    document.getElementById(
+        "workshopId"
+    ).disabled =
+        true;
+
+
+    document.getElementById(
+        "workshopName"
+    ).value =
+        workshop.name || "";
+
+
+    document.getElementById(
+        "workshopCategory"
+    ).value =
+        workshop.category || "";
+
+
+    document.getElementById(
+        "workshopLocation"
+    ).value =
+        workshop.location || "";
+
+
+    document.getElementById(
+        "workshopDescription"
+    ).value =
+        workshop.description || "";
+
+
+    document.getElementById(
+        "workshopCapacity"
+    ).value =
+        workshop.capacity || 1;
+
+
+    document.getElementById(
+        "workshopStatus"
+    ).value =
+        workshop.status || "scheduled";
+
+
+    document.getElementById(
+        "workshopStart"
+    ).value =
+        isoToLocalInput(
+            workshop.startAt
+        );
+
+
+    document.getElementById(
+        "workshopEnd"
+    ).value =
+        isoToLocalInput(
+            workshop.endAt
+        );
+
+
+    window.scrollTo({
+
+        top:
+            document.getElementById(
+                "adminPanel"
+            ).offsetTop - 20,
+
+        behavior:
+            "smooth"
+
+    });
+}
+
+
+/* =========================================================
+   ELIMINAR TALLER
+   ========================================================= */
+
+async function deleteWorkshop(
+    workshopId
+) {
+
+    if (!isAdmin()) {
+
+        showError(
+            "Solo los administradores pueden eliminar talleres."
+        );
+
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "¿Desea eliminar este taller?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        const data =
+            await apiFetch(
+
+                "/workshops/"
+                +
+                encodeURIComponent(
+                    workshopId
+                ),
+
+                {
+                    method:
+                        "DELETE"
+                },
+
+                true
+            );
+
+
+        showSuccess(
+            data.message
+        );
+
+
+        await loadWorkshops();
+
+    }
+
+    catch (error) {
+
+        showError(
+            error.message
+        );
+    }
+}
+
+
+/* =========================================================
+   LIMPIAR FORMULARIO
+   ========================================================= */
+
+function clearWorkshopForm() {
+
+    document.getElementById(
+        "workshopForm"
+    ).reset();
+
+
+    document.getElementById(
+        "editingWorkshopId"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "workshopId"
+    ).disabled =
+        false;
+
+
+    document.getElementById(
+        "workshopCapacity"
+    ).value =
+        30;
+
+
+    document.getElementById(
+        "workshopLocation"
+    ).value =
+        "Virtual";
+}
+
+
+/* =========================================================
+   MIS REGISTROS
+   ========================================================= */
+
+function registrationStorageKey() {
+
+    const user =
+        getCurrentUser();
+
+
+    if (!user) {
+        return null;
+    }
+
+
+    return (
+        "workshop_registrations_"
+        + user.email
+    );
+}
+
+
+function saveLocalRegistration(
+    workshop
+) {
+
+    const key =
+        registrationStorageKey();
+
+
+    if (!key) {
+        return;
+    }
+
+
+    const current =
+        JSON.parse(
+            localStorage.getItem(
+                key
+            )
+            || "[]"
+        );
+
+
+    const exists =
+        current.some(
+            item =>
+                String(item.workshopId)
+                ===
+                String(workshop.workshopId)
+        );
+
+
+    if (!exists) {
+
+        current.push({
+
+            workshopId:
+                workshop.workshopId,
+
+            name:
+                workshop.name,
+
+            registeredAt:
+                new Date()
+                    .toISOString()
+
+        });
+
+
+        localStorage.setItem(
+            key,
+            JSON.stringify(
+                current
+            )
+        );
+    }
+}
+
+
+function renderRegistrations() {
+
+    if (!isStudent()) {
+        return;
+    }
+
+
+    const key =
+        registrationStorageKey();
+
+
+    const registrations =
+        JSON.parse(
+            localStorage.getItem(
+                key
+            )
+            || "[]"
+        );
+
+
+    const container =
+        document.getElementById(
+            "registrationsContainer"
+        );
+
+
+    container.innerHTML =
+        "";
+
+
+    if (
+        registrations.length
+        ===
+        0
+    ) {
+
+        container.innerHTML =
+            "<p>No hay registros guardados.</p>";
+
+        return;
+    }
+
+
+    registrations.forEach(
+        item => {
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "registration-item";
+
+
+            row.innerHTML = `
+
+                <strong>
+                    ${escapeHtml(
+                        item.name
+                    )}
+                </strong>
+
+                <br>
+
+                ID:
+                ${escapeHtml(
+                    String(
+                        item.workshopId
+                    )
+                )}
+
+                <br>
+
+                Registrado:
+                ${formatDate(
+                    item.registeredAt
+                )}
+
+            `;
+
+
+            container.appendChild(
+                row
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   LINK MIS REGISTROS
+   ========================================================= */
+
+document.getElementById(
+    "myRegistrationsLink"
+).addEventListener(
+
+    "click",
+
+    function(event) {
+
+        event.preventDefault();
+
+
+        renderRegistrations();
+
+
+        const section =
+            document.getElementById(
+                "registrationsSection"
+            );
+
+
+        section.style.display =
+            "block";
+
+
+        section.scrollIntoView({
+            behavior:
+                "smooth"
+        });
+    }
+);
+
+
+/* =========================================================
+   MENSAJES
+   ========================================================= */
+
+function showError(message) {
+
+    const box =
+        document.getElementById(
+            "errorMessage"
+        );
+
+
+    box.textContent =
+        message;
+
+
+    box.style.display =
+        "block";
+
+
+    setTimeout(
+        () => {
+
+            box.style.display =
+                "none";
+
+        },
+        7000
+    );
+}
+
+
+function showSuccess(message) {
+
+    const box =
+        document.getElementById(
+            "successMessage"
+        );
+
+
+    box.textContent =
+        "✓ "
+        + message;
+
+
+    box.style.display =
+        "block";
+
+
+    setTimeout(
+        () => {
+
+            box.style.display =
+                "none";
+
+        },
+        6000
+    );
+}
+
+
+/* =========================================================
+   ESCAPAR TEXTO
+   ========================================================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+
+function escapeJs(value) {
+
+    return String(value)
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'");
+}
+
+
+/* =========================================================
+   FECHAS
+   ========================================================= */
+
+function formatDate(value) {
+
+    if (!value) {
+        return "-";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return escapeHtml(
+            String(value)
+        );
+    }
+
+
+    return date.toLocaleString(
+        "es-US"
+    );
+}
+
+
+function localDateToIso(value) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    return new Date(
+        value
+    ).toISOString();
+}
+
+
+function isoToLocalInput(value) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return "";
+    }
+
+
+    const local =
+        new Date(
+
+            date.getTime()
+            -
+            date.getTimezoneOffset()
+            *
+            60000
+        );
+
+
+    return local
+        .toISOString()
+        .slice(
+            0,
+            16
+        );
+}
+
+
+/* =========================================================
+   INICIALIZAR
+   ========================================================= */
+
+async function initializeApp() {
+
+    await processCallback();
+
+    updateAuthUI();
+
+    await loadWorkshops();
+
+    updateAuthUI();
+
+    renderRegistrations();
+}
+
+
+/* =========================================================
+   CERRAR MODAL AL HACER CLICK FUERA
+   ========================================================= */
+
+window.addEventListener(
+
+    "click",
+
+    function(event) {
+
+        const modal =
+            document.getElementById(
+                "registrationModal"
+            );
+
+
+        if (
+            event.target
+            ===
+            modal
+        ) {
+
+            closeRegistrationModal();
+        }
+    }
+);
+
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+
+initializeApp();
+
+</script>
+
+</body>
+</html>
