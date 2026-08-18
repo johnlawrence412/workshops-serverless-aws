@@ -1,0 +1,262 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Workshops Serverless - backend parametrizado para entornos dev y prod.
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - prod
+    Description: Entorno de despliegue.
+
+Resources:
+  WorkshopsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub workshops-iac-${Environment}
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      Tags:
+        - Key: Project
+          Value: Workshops
+        - Key: Env
+          Value: !Ref Environment
+
+  WorkshopsEventBus:
+    Type: AWS::Events::EventBus
+    Properties:
+      Name: !Sub workshops-events-iac-${Environment}
+      Tags:
+        - Key: Project
+          Value: Workshops
+        - Key: Env
+          Value: !Ref Environment
+
+  WorkshopsUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub workshops-users-iac-${Environment}
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+      UserPoolTags:
+        Project: Workshops
+        Env: !Ref Environment
+
+  WorkshopsUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub workshops-spa-iac-${Environment}
+      UserPoolId: !Ref WorkshopsUserPool
+      GenerateSecret: false
+      PreventUserExistenceErrors: ENABLED
+
+  AdminGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: Admin
+      Description: Administradores de Workshops
+      UserPoolId: !Ref WorkshopsUserPool
+
+  StudentGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: Student
+      Description: Estudiantes de Workshops
+      UserPoolId: !Ref WorkshopsUserPool
+
+  WorkshopsApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub workshops-rest-api-iac-${Environment}
+      StageName: !Ref Environment
+      TracingEnabled: true
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+      Auth:
+        DefaultAuthorizer: WorkshopsCognitoAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: false
+        Authorizers:
+          WorkshopsCognitoAuthorizer:
+            UserPoolArn: !GetAtt WorkshopsUserPool.Arn
+      Tags:
+        Project: Workshops
+        Env: !Ref Environment
+
+  WorkshopsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/workshops-api-iac-${Environment}
+      RetentionInDays: 30
+      Tags:
+        - Key: Project
+          Value: Workshops
+        - Key: Env
+          Value: !Ref Environment
+
+  WorkshopsApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub workshops-api-iac-${Environment}
+      Architectures:
+        - x86_64
+      CodeUri: ./src
+      Description: !Sub Backend serverless de Workshops - ${Environment}
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref WorkshopsTable
+          EVENT_BUS_NAME: !Ref WorkshopsEventBus
+          INDEX_NAME: GSI1
+          ENV: !Ref Environment
+      Handler: lambda_function.lambda_handler
+      LoggingConfig:
+        LogFormat: Text
+        LogGroup: !Ref WorkshopsLogGroup
+      MemorySize: 128
+      Runtime: python3.14
+      Timeout: 3
+      Tracing: Active
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref WorkshopsTable
+        - EventBridgePutEventsPolicy:
+            EventBusName: !Ref WorkshopsEventBus
+      Tags:
+        Project: Workshops
+        Env: !Ref Environment
+      Events:
+        ListWorkshops:
+          Type: Api
+          Properties:
+            RestApiId: !Ref WorkshopsApi
+            Method: GET
+            Path: /workshops
+            Auth:
+              Authorizer: NONE
+
+        GetWorkshop:
+          Type: Api
+          Properties:
+            RestApiId: !Ref WorkshopsApi
+            Method: GET
+            Path: /workshops/{id}
+            Auth:
+              Authorizer: NONE
+
+        CreateWorkshop:
+          Type: Api
+          Properties:
+            RestApiId: !Ref WorkshopsApi
+            Method: POST
+            Path: /workshops
+
+        UpdateWorkshop:
+          Type: Api
+          Properties:
+            RestApiId: !Ref WorkshopsApi
+            Method: PUT
+            Path: /workshops/{id}
+
+        DeleteWorkshop:
+          Type: Api
+          Properties:
+            RestApiId: !Ref WorkshopsApi
+            Method: DELETE
+            Path: /workshops/{id}
+
+        RegisterWorkshop:
+          Type: Api
+          Properties:
+            RestApiId: !Ref WorkshopsApi
+            Method: POST
+            Path: /workshops/{id}/register
+
+  WorkshopsLambdaErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub workshops-lambda-errors-iac-${Environment}
+      AlarmDescription: !Sub Detecta errores de la Lambda Workshops en ${Environment}.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref WorkshopsApiFunction
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      Tags:
+        - Key: Project
+          Value: Workshops
+        - Key: Env
+          Value: !Ref Environment
+
+Outputs:
+  Environment:
+    Description: Entorno desplegado
+    Value: !Ref Environment
+
+  ApiId:
+    Description: ID de API Gateway
+    Value: !Ref WorkshopsApi
+
+  ApiUrl:
+    Description: URL base de API Gateway
+    Value: !Sub https://${WorkshopsApi}.execute-api.${AWS::Region}.amazonaws.com/${Environment}
+
+  LambdaFunctionName:
+    Description: Nombre de la funcion Lambda
+    Value: !Ref WorkshopsApiFunction
+
+  DynamoDBTableName:
+    Description: Tabla DynamoDB del entorno
+    Value: !Ref WorkshopsTable
+
+  EventBusName:
+    Description: Bus de EventBridge del entorno
+    Value: !Ref WorkshopsEventBus
+
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref WorkshopsUserPool
+
+  UserPoolClientId:
+    Description: Cognito App Client ID
+    Value: !Ref WorkshopsUserPoolClient

@@ -1,0 +1,17 @@
+version = 0.1
+
+[dev.deploy.parameters]
+stack_name = "workshops-iac-dev"
+resolve_s3 = true
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+region = "us-east-1"
+parameter_overrides = "Environment=dev"
+
+[prod.deploy.parameters]
+stack_name = "workshops-iac-prod"
+resolve_s3 = true
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+region = "us-east-1"
+parameter_overrides = "Environment=prod"
